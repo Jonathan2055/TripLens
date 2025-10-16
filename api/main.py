@@ -48,6 +48,83 @@ def name_of_months(n):
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "database", "triplens.db")
 
+
+# function to get total trip count, optionally filtered by month
+def get_trip_count(month: str = None , Vendor_id: int = None):
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Build the count query
+        count_query = "SELECT COUNT(*) FROM trip"
+        params = ()
+        
+        if month:
+            count_query += " WHERE strftime('%m', trip.pickup_date) = ?"
+            params = (month,)
+            
+        if Vendor_id:
+            count_query += " WHERE trip.vendor_id = ?"
+            params = (Vendor_id,)
+        cursor.execute(count_query, params)
+        count = cursor.fetchone()[0]
+        conn.close()
+        return count
+    except Exception as e:
+        # Log error but return 0 to prevent crashing the main API call
+        print(f"Error getting trip count: {e}")
+        return 0
+
+# function to get average trip duration, optionally filtered by month
+def get_trip_average(month: str = None, Vendor_id: int = None):
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Build the count query
+        count_query = "SELECT AVG(trip_duration) AS trip_duration FROM trip"
+        params = ()
+        
+        if month:
+            count_query += " WHERE strftime('%m', trip.pickup_date) = ?"
+            params = (month,)
+        if Vendor_id:
+            count_query += " WHERE trip.vendor_id = ?"
+            params = (Vendor_id,)  
+        cursor.execute(count_query, params)
+        average = cursor.fetchone()[0]
+        conn.close()
+        return average
+    except Exception as e:
+        # Log error but return 0 to prevent crashing the main API call
+        print(f"Error getting Average: {e}")
+        return 0
+
+# function to get total trip count, optionally filtered by month
+def get_passenger_count(month: str = None, Vendor_id: int = None):
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Build the count query
+        count_query = "SELECT SUM(passenger_count) FROM trip"
+        params = ()
+        
+        if month:
+            count_query += " WHERE strftime('%m', trip.pickup_date) = ?"
+            params = (month,)
+        if Vendor_id:
+            count_query += " WHERE trip.vendor_id = ?"
+            params = (Vendor_id,)   
+        cursor.execute(count_query, params)
+        count = cursor.fetchone()[0]
+        conn.close()
+        return count
+    except Exception as e:
+        # Log error but return 0 to prevent crashing the main API call
+        print(f"Error getting trip count: {e}")
+        return 0
+    
 #select * from vendor
 def get_all_vendor():
     try:
@@ -56,23 +133,33 @@ def get_all_vendor():
         cursor.execute("SELECT * FROM vendor")
         rows = cursor.fetchall()
         conn.close()
+
         # Convert to list of dicts
         result = []
         for row in rows:
             result.append({
                 "id": row[0],
                 "name": row[1],
-                "descrption": row[2]
+                "descrption": row[2],
+                "trip_count": get_trip_count(Vendor_id=row[0]),
+                "average_trip_duration": get_trip_average(Vendor_id=row[0]),
+                "total_passenger": get_passenger_count(Vendor_id=row[0])
             })
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 #select * from trip
-def get_all_trip():
+def get_all_trip(skip: int = 0, limit: int = 20):
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
+        # Get total count first (optional, but good for frontend)
+        total_count = get_trip_count()
+        # Get average trip duration for this month
+        average_duration = get_trip_average()
+        # Get total passenger count for this month
+        total_passenger = get_passenger_count()
         cursor.execute("""
                        SELECT 
                         trip.id, 
@@ -89,8 +176,8 @@ def get_all_trip():
                         FROM trip 
                         INNER JOIN  vendor ON trip.vendor_id = vendor.id 
                         INNER JOIN  location ON trip.location_id = location.id 
-                        LIMIT 20 ;
-                       """)
+                        LIMIT ? OFFSET ? ;
+                       """, (limit, skip))
         rows = cursor.fetchall()
         conn.close()
         # Convert to list of dicts
@@ -109,7 +196,14 @@ def get_all_trip():
                 "store_and_fwd_flag": row[9],
                 "trip_duration": row[10]                
             })
-        return result
+        return {
+                "total_trip": total_count,
+                "skip": skip,
+                "limit": limit,
+                "average_trip_duration": average_duration,
+                "total_passenger": total_passenger,
+                "data": result
+            }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -161,13 +255,21 @@ def get_trip_by_id(id :str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-def get_trip_by_month(month: int):
+
+# select trip by month
+def get_trip_by_month(month: int, skip: int = 0, limit: int = 10):
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        month = f"{month:2d}"  # Format month as two digits
+        month_str = f"{month:02d}"  # Format month as two digits (e.g., 1 -> '01')
         
-        cursor.execute("""
+        # Get total count for this month
+        total_count = get_trip_count(month_str)
+        # Get average trip duration for this month
+        average_duration = get_trip_average(month_str)
+        # Get total passenger count for this month
+        total_passenger = get_passenger_count(month_str)
+        cursor.execute(f"""
                        SELECT  
                         trip.id, 
                         vendor.name,   
@@ -184,42 +286,44 @@ def get_trip_by_month(month: int):
                         INNER JOIN  vendor ON trip.vendor_id = vendor.id 
                         INNER JOIN  location ON trip.location_id = location.id 
                         WHERE strftime('%m', trip.pickup_date) = ?
-                        LIMIT 10;
-        """, (month))
-        row = cursor.fetchall()
+                        LIMIT ? OFFSET ?;
+        """, (month_str, limit, skip))
+        rows = cursor.fetchall()
         conn.close()
-        if row:
-            json = {name_of_months(month) : []}
-            for i in row:
-                id = i[0]
-                vendor_name = i[1]
-                trip_pickup_date = i[2]
-                trip_dropoff_date = i[3]
-                trip_passenger_count = i[4]
-                location_pickup_longitude = i[5]
-                location_pickup_latitude = i[6]
-                location_dropoff_longitude = i[7]
-                location_dropoff_latitude = i[8]
-                trip_store_and_fwd_flag = i[9]
-                trip_trip_duration = i[10]
-                json[name_of_months(month)].append({
-                    "Trip_id":id,
-                    "vendor_name": vendor_name,
-                    "trip_pickup_date": trip_pickup_date,
-                    "trip_dropoff_date": trip_dropoff_date,
-                    "trip_passenger_count": trip_passenger_count,
-                    "location_pickup_longitude": location_pickup_longitude,
-                    "location_pickup_latitude": location_pickup_latitude,
-                    "location_dropoff_longitude": location_dropoff_longitude,
-                    "location_dropoff_latitude": location_dropoff_latitude,
-                    "trip_store_and_fwd_flag": trip_store_and_fwd_flag,
-                    "trip_trip_duration": trip_trip_duration
-                })
-            return json
+
+        result_data = []
+        for i in rows:
+            # ... (mapping row data to dict) ...
+            result_data.append({
+                "Trip_id": i[0],
+                "vendor_name": i[1],
+                "trip_pickup_date": i[2],
+                "trip_dropoff_date": i[3],
+                "trip_passenger_count": i[4],
+                "location_pickup_longitude": i[5],
+                "location_pickup_latitude": i[6],
+                "location_dropoff_longitude": i[7],
+                "location_dropoff_latitude": i[8],
+                "trip_store_and_fwd_flag": i[9],
+                "trip_trip_duration": i[10]
+            })
+            
+        if result_data:
+            return {
+                "total_trip": total_count,
+                "skip": skip,
+                "limit": limit,
+                "month_name": name_of_months(month_str),
+                "average_trip_duration": average_duration,
+                "total_passenger": total_passenger,
+                "data": result_data
+            }
         else:
             raise HTTPException(status_code=404, detail=f"No trips where made this month")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
 
 
 
@@ -232,14 +336,19 @@ def read_trip(id:str):
 
 # API endpoint to get all trip
 @app.get("/trip")
-def read_trip():
-    return get_all_trip()
+def read_all_trip_paginated(skip: int = 0, limit: int = 20):
+    return get_all_trip(skip=skip, limit=limit)
 
 # API endpoint to get all trip by months
 @app.get("/trip/month/{month}")
-def read_trip_by_month(month: int):
-    return get_trip_by_month(month)
+def read_trip_by_month_paginated(month: int, skip: int = 0, limit: int = 10):
+    # Basic validation for month
+    return get_trip_by_month(month, skip=skip, limit=limit)
 
+# API endpoint to get all vendors
+@app.get("/vendor")
+def read_all_vendor():
+    return get_all_vendor()
 
 if __name__ == "__main__":
     port = 8080
