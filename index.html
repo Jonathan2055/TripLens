@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TripLens</title>
-    <link rel="stylesheet" href="/web/styles.css">
+    <link rel="stylesheet" href="/web/css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -21,7 +21,6 @@
             <div class="nav-menu">
                 <a href="/index.html" class="nav-link">Dashboard</a>
                 <a href="/web/vendor.html" target="_blank" class="nav-link">Vendor Details</a>
-                <a href="/web/trip.html" blank="" class="nav-link">Trips</a>
             </div>
         </div>
     </nav>
@@ -44,8 +43,8 @@
                     <i class="fas fa-route"></i>
                 </div>
                 <div class="metric-content">
-                    <h3 id="total-trips">0</h3>
                     <p>Total Trips</p>
+                    <h3 id="total-trips"></h3>
                 </div>
             </div>
             
@@ -54,8 +53,8 @@
                     <i class="fas fa-clock"></i>
                 </div>
                 <div class="metric-content">
-                    <h3 id="avg-duration">0 min</h3>
                     <p>Avg Duration</p>
+                    <h3 id="avg-duration"></h3>
                 </div>
             </div>
             
@@ -64,106 +63,47 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="metric-content">
-                    <h3 id="total-passengers">0</h3>
                     <p>Total Passengers</p>
+                    <h3 id="total-passengers"></h3>
                 </div>
             </div>
         </section>
 
         <!-- Months -->
-        <section class="metrics-grid" id="month-container">
-            <a href="" class="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>January</h3>
-                        <p>Total Trips: </p>
+        <section class="data-section">
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Recent Trips</h3>
+                    <div class="table-controls">
+                        <div class="search-box">
+                            <select id="month-select">
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>February</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>                
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>March</h3>
-                        <p>Total Trips: </p>
-                    </div>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h1 id="month-name"></h1>
+                    <h3 id="month-total-trips"></h3>
+                    <button class="btn btn-outline" id="show-month">More Details</button>
                 </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>April</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>May</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>June</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>July</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>September</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>October</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>November</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>
-            </a>
-            <a href="">
-                <div class="metric-card">
-                    <div class="metric-content">
-                        <h3>December</h3>
-                        <p>Total Trips: </p>
-                    </div>
-                </div>
-            </a>
-            
-            
+            </div>
         </section>
-
     </main>
+    <script src="web/js/index.js"></script>
+
 </body>
 </html>
