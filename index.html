@@ -3,9 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>TripLens</title>
+    <link rel="stylesheet" href="/web/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/index.html" class="nav-link">
+                    <i class="fas fa-car-side"></i>
+                    <span>TripLens</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="/index.html" class="nav-link">Dashboard</a>
+                <a href="/web/vendor.html" target="_blank" class="nav-link">Vendor Details</a>
+                <a href="/web/trip.html" blank="" class="nav-link">Trips</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Dashboard Header -->
+        <section class="dashboard-header">
+            <div class="header-content">
+                <h1>Analytics</h1>
+                <p>Monitor and analyze trip data across different vendors</p>
+            </div>
+        </section>
+
+        <!-- Metrics Cards -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+                <div class="metric-content">
+                    <h3 id="total-trips">0</h3>
+                    <p>Total Trips</p>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="metric-content">
+                    <h3 id="avg-duration">0 min</h3>
+                    <p>Avg Duration</p>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="metric-content">
+                    <h3 id="total-passengers">0</h3>
+                    <p>Total Passengers</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Months -->
+        <section class="metrics-grid" id="month-container">
+            <a href="" class="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>January</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>February</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>                
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>March</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>April</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>May</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>June</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>July</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>September</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>October</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>November</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            <a href="">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <h3>December</h3>
+                        <p>Total Trips: </p>
+                    </div>
+                </div>
+            </a>
+            
+            
+        </section>
+
+    </main>
 </body>
 </html>
