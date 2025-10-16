@@ -246,7 +246,7 @@ def get_trip_by_id(id :str):
                 "location_dropoff_longitude": row[7],
                 "location_dropoff_latitude": row[8],
                 "trip_store_and_fwd_flag": row[9],
-                "trip_trip_duration": row[10]
+                "trip_duration": row[10]
 
             }
         else:
@@ -305,7 +305,7 @@ def get_trip_by_month(month: int, skip: int = 0, limit: int = 10):
                 "location_dropoff_longitude": i[7],
                 "location_dropoff_latitude": i[8],
                 "trip_store_and_fwd_flag": i[9],
-                "trip_trip_duration": i[10]
+                "trip_duration": i[10]
             })
             
         if result_data:
@@ -313,6 +313,7 @@ def get_trip_by_month(month: int, skip: int = 0, limit: int = 10):
                 "total_trip": total_count,
                 "skip": skip,
                 "limit": limit,
+                "month": month_str,
                 "month_name": name_of_months(month_str),
                 "average_trip_duration": average_duration,
                 "total_passenger": total_passenger,
